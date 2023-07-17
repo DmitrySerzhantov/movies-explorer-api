@@ -1,0 +1,16 @@
+{
+  "name": "movies-explorer",
+  "version": "1.0.0",
+  "description": "Бэкенд диплома",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "lint": "npx eslint .",
+    "dev": "nodemon app.js"
+  },
+  "author": "Serzhantov Dmitry",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^7.3.4"
+  }
+}
