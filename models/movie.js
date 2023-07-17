@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { validatorURL } = require('../validators/validatorURL');
 
-const cardSchema = new mongoose.Schema({
+const movieSchema = new mongoose.Schema({
   country: {
     type: String,
     required: true,
@@ -56,4 +56,4 @@ const cardSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('card', cardSchema);
+module.exports = mongoose.model('card', movieSchema);
