@@ -7,7 +7,7 @@ const {
   created,
   messageInvalidUserData,
   messageUserloggedOut,
-  messageuserNotFound: messageUserNotFound,
+  messageUserNotFound,
   messageIncorrectUserData,
 } = require('../utils/constants');
 const NotFoundError = require('../errors/NotFoundError');
