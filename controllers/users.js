@@ -2,7 +2,14 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const jsonWebToken = require('jsonwebtoken');
 const User = require('../models/user');
-const { ok, created } = require('../utils/constants');
+const {
+  ok,
+  created,
+  messageInvalidUserData,
+  messageUserloggedOut,
+  messageuserNotFound: messageUserNotFound,
+  messageIncorrectUserData,
+} = require('../utils/constants');
 const NotFoundError = require('../errors/NotFoundError');
 const Unauthorized = require('../errors/Unauthorized');
 const BadRequest = require('../errors/BadRequest');
@@ -25,7 +32,7 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email })
     .select('+password')
-    .orFail(() => new Unauthorized('Неверные данные пользователя'))
+    .orFail(() => new Unauthorized(messageInvalidUserData))
     .then((user) => {
       bcrypt
         .compare(String(password), user.password)
@@ -36,7 +43,7 @@ const login = (req, res, next) => {
               {
                 _id: user.id,
               },
-              NODE_ENV === 'production' ? JWT_SECRET : 'SECRET'
+              NODE_ENV === 'production' ? JWT_SECRET : 'SECRET',
             );
             res.cookie('jwt', jwt, {
               maxAge: 360000,
@@ -45,7 +52,7 @@ const login = (req, res, next) => {
             });
             return res.send({ data: user.toJSON() });
           }
-          throw new Unauthorized('Неверные данные пользователя');
+          throw new Unauthorized(messageInvalidUserData);
         })
         .catch(next);
     })
@@ -57,9 +64,7 @@ const logout = async (req, res) => {
     expires: new Date(Date.now() + 5 * 1000),
     httpOnly: true,
   });
-  res
-    .status(200)
-    .json({ success: true, message: 'User logged out successfully' });
+  res.status(200).json({ success: true, message: messageUserloggedOut });
 };
 // Запрос на GET /users/me
 const userProfile = (req, res, next) => {
@@ -69,7 +74,7 @@ const userProfile = (req, res, next) => {
         res.status(ok).send(user);
         return;
       }
-      throw new NotFoundError('пользователь с таким ID не найден');
+      throw new NotFoundError(messageUserNotFound);
     })
     .catch(next);
 };
@@ -77,7 +82,7 @@ const userProfile = (req, res, next) => {
 const updateUser = async (req, res, next) => {
   User.findOneAndUpdate(
     { _id: req.user._id },
-    { name: req.body.name, about: req.body.about },
+    { name: req.body.name, email: req.body.email },
     {
       returnDocument: 'after',
       runValidators: true,
@@ -86,7 +91,7 @@ const updateUser = async (req, res, next) => {
     .then((user) => res.status(ok).send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error) {
-        next(new BadRequest('Переданы некорректные данные пользователя!!!'));
+        next(new BadRequest(messageIncorrectUserData));
       } else {
         next(err);
       }

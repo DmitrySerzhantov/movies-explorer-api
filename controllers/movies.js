@@ -4,7 +4,14 @@ const NotFoundError = require('../errors/NotFoundError');
 const Forbidden = require('../errors/Forbidden');
 const BadRequest = require('../errors/BadRequest');
 
-const { ok, created } = require('../utils/constants');
+const {
+  ok,
+  created,
+  messageIncorrectMovieData,
+  messageMovieNotFound,
+  messageNoRights,
+  messageInvalidId,
+} = require('../utils/constants');
 
 const getMovies = (req, res, next) => {
   Movie.find({})
@@ -20,7 +27,7 @@ const createMovie = (req, res, next) => {
     .then((card) => res.status(created).send(card))
     .catch((err) => {
       if (err instanceof mongoose.Error) {
-        next(new BadRequest('Переданы некорректные данные поля карточки!!!'));
+        next(new BadRequest(messageIncorrectMovieData));
       } else {
         next(err);
       }
@@ -28,23 +35,23 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  Movie.findById(req.params.cardId)
+  Movie.findById(req.params._id)
     .orFail(() => {
-      throw new NotFoundError('Карточка с таким ID не существует');
+      throw new NotFoundError(messageMovieNotFound);
     })
-    .then((card) => {
-      if (String(card.owner) === req.user._id) {
-        card
+    .then((movie) => {
+      if (String(movie.owner) === req.user._id) {
+        movie
           .deleteOne()
-          .then(() => res.status(ok).send(card))
+          .then(() => res.status(ok).send(movie))
           .catch(next);
       } else {
-        throw new Forbidden('Карточка принадлежит другому пользователю');
+        throw new Forbidden(messageNoRights);
       }
     })
     .catch((err) => {
       if (err instanceof mongoose.Error) {
-        next(new BadRequest('Передан не верный формат ID !!!'));
+        next(new BadRequest(messageInvalidId));
       } else {
         next(err);
       }
