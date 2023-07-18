@@ -12,10 +12,8 @@ const errorHandler = require('./middlewares/error');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { URL_BD } = process.env;
-
 // Слушаем 3000 порт
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, URL_BD } = process.env;
 
 const app = express();
 
@@ -33,7 +31,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
-app.use(limiter);
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
@@ -41,7 +38,7 @@ app.get('/crash-test', () => {
 });
 
 app.use(router);
-
+app.use(limiter);
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
