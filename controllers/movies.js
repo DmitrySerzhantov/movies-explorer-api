@@ -14,8 +14,10 @@ const {
 } = require('../utils/constants');
 
 const getMovies = (req, res, next) => {
-  Movie.find({})
-    .then((cards) => res.status(ok).send(cards))
+  Movie.find({ owner: req.user._id })
+    .then((movies) => {
+      res.status(ok).send(movies);
+    })
     .catch(next);
 };
 
@@ -24,7 +26,7 @@ const createMovie = (req, res, next) => {
     ...req.body,
     owner: req.user._id,
   })
-    .then((card) => res.status(created).send(card))
+    .then((movie) => res.status(created).send(movie))
     .catch((err) => {
       if (err instanceof mongoose.Error) {
         next(new BadRequest(messageIncorrectMovieData));
