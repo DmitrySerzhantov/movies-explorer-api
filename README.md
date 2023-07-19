@@ -8,7 +8,7 @@
 
 ## Ссылки на проект
 
-IP http://158.160.38.113
+IP http://84.201.172.83
 
 Backend https://api.serzhantov.diplom.nomoredomains.xyz
 
