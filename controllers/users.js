@@ -5,10 +5,10 @@ const User = require('../models/user');
 const {
   ok,
   created,
-  messageInvalidUserData,
   messageUserloggedOut,
   messageUserNotFound,
   messageIncorrectUserData,
+  messageUnauthorized,
 } = require('../utils/constants');
 const NotFoundError = require('../errors/NotFoundError');
 const Unauthorized = require('../errors/Unauthorized');
@@ -32,7 +32,7 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email })
     .select('+password')
-    .orFail(() => new Unauthorized(messageInvalidUserData))
+    .orFail(() => new Unauthorized(messageUnauthorized))
     .then((user) => {
       bcrypt
         .compare(String(password), user.password)
@@ -52,7 +52,7 @@ const login = (req, res, next) => {
             });
             return res.send({ data: user.toJSON() });
           }
-          throw new Unauthorized(messageInvalidUserData);
+          throw new Unauthorized(messageUnauthorized);
         })
         .catch(next);
     })

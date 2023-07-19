@@ -13,6 +13,10 @@ const messageIncorrectMovieData = 'Переданы некорректные д�
 const messageMovieNotFound = 'Фильм с таким ID не существует';
 const messageNoRights = 'Запись принадлежит другому пользователю';
 const messageInvalidId = 'Передан не верный формат ID !!!';
+const messageUnauthorized = 'Пользователь не авторизован';
+const messageEmailExists = 'Пользователь с таким email уже существует';
+const messageErrorServer = 'На сервере произошла ошибка';
+const mongodb = 'mongodb://localhost:27017/bitfilmsdb';
 
 module.exports = {
   ok,
@@ -30,4 +34,8 @@ module.exports = {
   messageMovieNotFound,
   messageNoRights,
   messageInvalidId,
+  messageUnauthorized,
+  messageEmailExists,
+  messageErrorServer,
+  mongodb,
 };
