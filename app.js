@@ -28,7 +28,7 @@ mongoose.connect(NODE_ENV === 'production' ? URL_DB : mongodb, {
 app.use(helmet());
 
 app.use(cookieParser());
-app.use(cors({ origin: 'https://serzhantov.diplom.nomoredomains.xyz/', credentials: true }));
+app.use(cors({ origin: URL_API, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
@@ -39,4 +39,4 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT, (console.log(URL_API)));
+app.listen(PORT, (console.log(PORT)));
