@@ -22,7 +22,7 @@ const createUser = (req, res, next) => {
         ...req.body,
         password: hashedPassword,
       })
-        .then((user) => res.status(created).send({ data: user }).headers('Access-Control-Allow-Origin', req.headers.origin))
+        .then((user) => res.status(created).send({ data: user }))
         .catch(next);
     })
     .catch(next);
